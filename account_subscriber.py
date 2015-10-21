@@ -1,8 +1,8 @@
 from instagram.client import InstagramAPI
 from instagram.bind import InstagramAPIError
 from pymongo import MongoClient
-import pickle
 import gevent
+import make_hit
 
 import gevent.monkey
 gevent.monkey.patch_socket()
@@ -48,11 +48,10 @@ def get_user_posts(user_id, append_list):
 
 def do_pull():
     new_last_posts = []
-    try:
-        f = open("last_posts.pkl", "r")
-        last_posts = pickle.load(f)
-        f.close()
-    except IOError:
+    last_posts_q = db['last_posts'].find_one()
+    if last_posts_q:
+        last_posts = last_posts_q['last_posts']
+    else:
         last_posts = False
     q = db['tracked_users'].find()
     post_data_list = []
@@ -63,12 +62,13 @@ def do_pull():
     for posts in post_data_list:
         if not last_posts or posts[0].id not in last_posts:
             #-----------MAKE_HIT()-----------
-            print posts[0].id
+            make_hit.make_hit_from_post(posts[0].id)
             #--------------------------------
         new_last_posts.append(posts[0].id)
-    f = open("last_posts.pkl", "w")
-    pickle.dump(new_last_posts, f)
-    f.close()
+    if last_posts:
+        db['last_posts'].replace_one({'last_posts':last_posts}, {'last_posts':new_last_posts})
+    else:
+        db['last_posts'].insert({'last_posts':new_last_posts})
 
 if __name__ == '__main__':
     do_pull()
