@@ -2,17 +2,21 @@ import os
 from boto.mturk.connection import MTurkConnection
 from boto.mturk.question import ExternalQuestion
 from boto.mturk.price import Price
-from boto.mturk.qualification import Qualifications, PercentAssignmentsApprovedRequirement, NumberHitsApprovedRequirement
-
+from boto.mturk.qualification import Qualifications, PercentAssignmentsApprovedRequirement, NumberHitsApprovedRequirement, Requirement
+import requests
 import datetime
 
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 
+API_KEY = 'CazMCDN5G2SuFhET3BuXdLIW01PQxisNLwKRIw'
+
 if os.environ.get("DEV_PROD"):
     HOST = 'mechanicalturk.amazonaws.com'
+    QUAL = '3R5PEB0CKOM2DLVFJW0IK79PLLFO96'
 else:
     HOST = 'mechanicalturk.sandbox.amazonaws.com'
+    QUAL = '3ZNBPLV0N92Q4CDD8ICDTG5RJLD2CJ'
 
 connection = MTurkConnection(aws_access_key_id=AWS_ACCESS_KEY_ID,
                              aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
@@ -21,8 +25,9 @@ connection = MTurkConnection(aws_access_key_id=AWS_ACCESS_KEY_ID,
 
 def create_hit(url=None, title=None, description=None, keywords=None, reward_amount=None, max_assignments=None, duration_in_minutes=None, lifetime_in_minutes=None, approval_delay_in_days=None, qualification_list=None):
     url = url or "https://squadtest.herokuapp.com/"
+    time = datetime.datetime.utcnow().strftime("%b %d %H:%M:%S")
     title = title or "[URGENT] Compare 20 sets of 2 Instagram posts to guess which performed better (<2 minutes)"
-    description = description or "This HIT must be completed within 15 minutes of it being posted. It will take less than 2 minutes."
+    description = description or "This HIT must be completed within 15 minutes of it being posted. It will take less than 2 minutes. Date: %s" %(time)
     keywords = keywords or ["easy", "survey", "study", "bonus", "image", "images", "compare", "comparisons", "collection", "data", "research", "listings", "simple", "photo", "answer", "opinion", "question"]
     frame_height = 800
     reward_amount = reward_amount or .25
@@ -63,9 +68,24 @@ def send_workers_message(worker_ids, subject, message_text):
         if response != []:
             print response
 
-def make_hit_from_post(post_id):
-    queue_id = POST_TO_API(post_id)
-    response = create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id))
+def create_queue(user_id, post_id):
+    API_URL = "http://squadapi.com/api/v0/instagram/posts/comparisons/queues/"
+    data = {
+        'api_key': API_KEY,
+        'user_id': user_id,
+        'post_id': post_id
+    }
+    res = requests.get(API_URL, params=data)
+    if res.status_code != 200:
+        print "POST Error ", res.text, data
+    return res.json()['results'][0]
+
+def make_hit_from_post(user_id, post_id):
+    res = create_queue(user_id, post_id)
+    queue_id = res['id']
+    qual = Requirement(QUAL, 'GreaterThan', 0)
+    response = create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), qualification_list = [qual])
     hit_id = response[0].HITId
-    worker_ids = [x.SubjectId for x in connection.get_all_qualifications_for_qual_type("3R5PEB0CKOM2DLVFJW0IK79PLLFO96")]
-    send_workers_message(worker_ids, "[URGENT: 15 minutes to complete] A new Market Intelligence HIT has been posted", "A new HIT has been posted by Market Intelligence. It has HIT_ID %s. You are qualified to do the HIT. You have 15 minutes to complete the HIT." % (hit_id))
+    worker_ids = [x.SubjectId for x in connection.get_all_qualifications_for_qual_type(QUAL)]
+    send_workers_message(worker_ids, "[URGENT: 15 minutes to complete] A new Market Intelligence HIT has been posted", "A new HIT has been posted by Market Intelligence. It has HIT_ID %s. All our HITs can be found at our requester page (http://bit.ly/1Gmbre0) or by searching for Market Intelligence You are qualified to do the HIT. You have 15 minutes to complete the HIT." % (hit_id))
+    

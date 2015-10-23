@@ -62,7 +62,7 @@ def do_pull():
     for posts in post_data_list:
         if not last_posts or posts[0].id not in last_posts:
             #-----------MAKE_HIT()-----------
-            make_hit.make_hit_from_post(posts[0].id)
+            make_hit.make_hit_from_post(posts[0].user, posts[0].id)
             #--------------------------------
         new_last_posts.append(posts[0].id)
     if last_posts:
