@@ -25,7 +25,7 @@ def add_tracked_user(username):
         break
     for data in datalist:
         if data.username == username:
-            if get_user_posts(str(data.id)) != False:
+            if get_user_posts(str(data.id), []) != False:
                 db['tracked_users'].insert({'username': username,'user_id':str(data.id)})
                 return True
             else:
@@ -46,6 +46,7 @@ def get_user_posts(user_id, append_list):
         if (int(e.status_code) == 400):
             return False
     append_list.append(ret[0])
+    return True
 
 def do_pull():
     new_last_posts = []
