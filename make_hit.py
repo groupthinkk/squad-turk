@@ -75,10 +75,10 @@ def create_queue(user_id, post_id):
         'user_id': user_id,
         'post_id': post_id
     }
-    res = requests.get(API_URL, params=data)
+    res = requests.post(API_URL, data=data)
     if res.status_code != 200:
         print "POST Error ", res.text, data
-    return res.json()['results'][0]
+    return res.json()
 
 def make_hit_from_post(user_id, post_id):
     res = create_queue(user_id, post_id)
@@ -88,6 +88,6 @@ def make_hit_from_post(user_id, post_id):
     response1 = create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), reward_amount=.50, qualification_list = [qual1])
     hit_id = response1[0].HITId
     worker_ids = [x.SubjectId for x in connection.get_all_qualifications_for_qual_type(QUAL)]
-    send_workers_message(worker_ids, "[URGENT: 15 minutes to complete] A new Market Intelligence HIT has been posted", "A new HIT has been posted by Market Intelligence. It has HIT_ID %s. All our HITs can be found at our requester page (http://bit.ly/1Gmbre0) or by searching for Market Intelligence You are qualified to do the HIT. You have 15 minutes to complete the HIT." % (hit_id))
+    send_workers_message(worker_ids, "[URGENT: 15 minutes to complete] A new Market Intelligence HIT has been posted", "A new HIT has been posted by Market Intelligence. It has HIT_ID %s. All our HITs can be found at our requester page (http://bit.ly/20vu8m5) or by searching for Market Intelligence You are qualified to do the HIT. You have 15 minutes to complete the HIT." % (hit_id))
     create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), reward_amount=.35, qualification_list = [qual2])
     
