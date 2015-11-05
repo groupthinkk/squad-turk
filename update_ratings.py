@@ -12,11 +12,9 @@ AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 
 if os.environ.get("DEV_PROD"):
+    print "------PROD------"
     HOST = 'mechanicalturk.amazonaws.com'
     QUAL = '3R5PEB0CKOM2DLVFJW0IK79PLLFO96'
-    while(1):
-        if raw_input("Type 'yes' to continue:") == "yes":
-            break
 else:
     HOST = 'mechanicalturk.sandbox.amazonaws.com'
     QUAL = '3ZNBPLV0N92Q4CDD8ICDTG5RJLD2CJ'
