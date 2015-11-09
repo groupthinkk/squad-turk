@@ -17,8 +17,8 @@ API_KEY = cfg.API_KEY
 
 if cfg.DEV_PROD == 1:
     print "PROD"
-    #HOST = 'mechanicalturk.amazonaws.com'
-    #QUAL = '3R5PEB0CKOM2DLVFJW0IK79PLLFO96'
+    HOST = 'mechanicalturk.amazonaws.com'
+    QUAL = '3R5PEB0CKOM2DLVFJW0IK79PLLFO96'
 else:
     HOST = 'mechanicalturk.sandbox.amazonaws.com'
     QUAL = '3ZNBPLV0N92Q4CDD8ICDTG5RJLD2CJ'
