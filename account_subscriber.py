@@ -94,6 +94,7 @@ def populate_last_posts():
         db['last_posts'].insert({'last_posts':new_last_posts})
 
 if __name__ == '__main__':
+    print "Running"
     if len(sys.argv) > 1:
         if sys.argv[1] == '0':
             populate_last_posts()
