@@ -5,15 +5,20 @@ from boto.mturk.price import Price
 from boto.mturk.qualification import Qualifications, PercentAssignmentsApprovedRequirement, NumberHitsApprovedRequirement, Requirement
 import requests
 import datetime
+from config import Config
 
-AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+f = file('codes.cfg')
+cfg = Config(f)
 
-API_KEY = 'CazMCDN5G2SuFhET3BuXdLIW01PQxisNLwKRIw'
+AWS_ACCESS_KEY_ID = cfg.AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY = cfg.AWS_SECRET_ACCESS_KEY
 
-if os.environ.get("DEV_PROD"):
-    HOST = 'mechanicalturk.amazonaws.com'
-    QUAL = '3R5PEB0CKOM2DLVFJW0IK79PLLFO96'
+API_KEY = cfg.API_KEY
+
+if cfg.DEV_PROD == 1:
+    print "PROD"
+    #HOST = 'mechanicalturk.amazonaws.com'
+    #QUAL = '3R5PEB0CKOM2DLVFJW0IK79PLLFO96'
 else:
     HOST = 'mechanicalturk.sandbox.amazonaws.com'
     QUAL = '3ZNBPLV0N92Q4CDD8ICDTG5RJLD2CJ'
