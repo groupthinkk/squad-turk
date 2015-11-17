@@ -35,8 +35,8 @@ def create_hit(url=None, title=None, description=None, keywords=None, reward_amo
     description = description or "This HIT must be completed within 15 minutes of it being posted. It will take less than 2 minutes. Date: %s" %(time)
     keywords = keywords or ["easy", "survey", "study", "bonus", "image", "images", "compare", "comparisons", "collection", "data", "research", "listings", "simple", "photo", "answer", "opinion", "question"]
     frame_height = 800
-    reward_amount = reward_amount or .35
-    max_assignments = max_assignments or 10
+    reward_amount = reward_amount or .25
+    max_assignments = max_assignments or 67
 
     duration_in_minutes = duration_in_minutes or 15
     duration = datetime.timedelta(minutes=duration_in_minutes)
@@ -92,7 +92,7 @@ def make_hit_from_post(user_id, post_id):
     qual2 = Requirement(QUAL, 'DoesNotExist')
     q1 = PercentAssignmentsApprovedRequirement('GreaterThan', 95)
     q2 = NumberHitsApprovedRequirement('GreaterThan', 500)
-    response1 = create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), reward_amount=.50, qualification_list = [qual1])
+    response1 = create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), reward_amount=.40, qualification_list = [qual1])
     hit_id = response1[0].HITId
     worker_ids = [x.SubjectId for x in connection.get_all_qualifications_for_qual_type(QUAL)]
     #send_workers_message(worker_ids, "A new Market Intelligence HIT has been posted", "A new HIT has been posted by Market Intelligence. It has HIT_ID %s. All our HITs can be found at our requester page (http://bit.ly/20vu8m5) or by searching for Market Intelligence You are qualified to do the HIT. This HIT has a limited number of assignments and may not be available if you reach it late." % (hit_id))
