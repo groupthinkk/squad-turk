@@ -1,10 +1,6 @@
-import os
 from boto.mturk.connection import MTurkConnection
-from boto.mturk.question import ExternalQuestion
-from boto.mturk.price import Price
-from boto.mturk.qualification import Qualifications, PercentAssignmentsApprovedRequirement, NumberHitsApprovedRequirement, Requirement
 import requests
-import datetime
+from config import Config
 
 f = file('codes.cfg')
 cfg = Config(f)
@@ -16,8 +12,8 @@ API_KEY = cfg.API_KEY
 
 if cfg.DEV_PROD == 1:
     print "PROD"
-    #HOST = 'mechanicalturk.amazonaws.com'
-    #QUAL = '3R5PEB0CKOM2DLVFJW0IK79PLLFO96'
+    HOST = 'mechanicalturk.amazonaws.com'
+    QUAL = '3R5PEB0CKOM2DLVFJW0IK79PLLFO96'
 else:
     HOST = 'mechanicalturk.sandbox.amazonaws.com'
     QUAL = '3ZNBPLV0N92Q4CDD8ICDTG5RJLD2CJ'
