@@ -31,7 +31,7 @@ connection = MTurkConnection(aws_access_key_id=AWS_ACCESS_KEY_ID,
 def create_hit(url=None, title=None, description=None, keywords=None, reward_amount=None, max_assignments=None, duration_in_minutes=None, lifetime_in_minutes=None, approval_delay_in_days=None, qualification_list=None):
     url = url or "https://squadtest.herokuapp.com/"
     time = datetime.datetime.utcnow().strftime("%b %d %H:%M:%S")
-    title = title or "[URGENT] Compare 20 sets of 2 Instagram posts to guess which performed better (<2 minutes)"
+    title = title or "[URGENT] Compare ~35 sets of 2 Instagram posts to guess which performed better (<2 minutes)"
     description = description or "This HIT must be completed within 15 minutes of it being posted. It will take less than 2 minutes. Date: %s" %(time)
     keywords = keywords or ["easy", "survey", "study", "bonus", "image", "images", "compare", "comparisons", "collection", "data", "research", "listings", "simple", "photo", "answer", "opinion", "question"]
     frame_height = 800
