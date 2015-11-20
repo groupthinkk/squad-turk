@@ -26,7 +26,7 @@ def add_tracked_user(username):
     for data in datalist:
         if data.username == username:
             if get_user_posts(str(data.id), []) != False:
-                db['tracked_users'].insert({'username': username,'user_id':str(data.id)})
+                db['tracked_users'].insert({'username': username,'user_id':str(data.id), 'post_since_last_hit':0})
                 return True
             else:
                 return False
@@ -64,8 +64,12 @@ def do_pull():
     for posts in post_data_list:
         if not last_posts or posts[0].id not in last_posts:
             #-----------MAKE_HIT()-----------
-            make_hit.make_hit_from_post(posts[0].user.id, posts[0].id)
-            print "Made HIT from %s" % (posts[0].id)
+            if db['tracked_users'].find_one({'user_id': posts[0].user.id})['post_since_last_hit'] >= 3:
+                db['tracked_users'].update_one({'user_id': posts[0].user.id}, {'$set': {'post_since_last_hit': 0}})
+                make_hit.make_hit_from_post(posts[0].user.id, posts[0].id)
+                print "Made HIT from %s" % (posts[0].id)
+            else:
+                db['tracked_users'].update_one({'user_id': posts[0].user.id}, {'$inc': {'post_since_last_hit': 1}})
             #--------------------------------
         new_last_posts.append(posts[0].id)
     if last_posts:
