@@ -95,8 +95,6 @@ def make_hit_from_post(user_id, post_id):
     q1 = PercentAssignmentsApprovedRequirement('GreaterThan', 95)
     q2 = NumberHitsApprovedRequirement('GreaterThan', 500)
     response1 = create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), reward_amount=.45, qualification_list = [qual1])
-    if response1 != []:
-        return
     hit_id = response1[0].HITId
     worker_ids = [x.SubjectId for x in connection.get_all_qualifications_for_qual_type(QUAL) if x.SubjectId not in IGNORE_LIST]
     send_workers_message(worker_ids, "A new Market Intelligence HIT has been posted", "A new HIT has been posted by Market Intelligence. It has HIT_ID %s. All our HITs can be found at our requester page (http://bit.ly/20vu8m5) or by searching for Market Intelligence. You are qualified to do the HIT. This HIT has a limited number of assignments and may not be available if you reach it late." % (hit_id))
