@@ -9,6 +9,8 @@ import gevent.monkey
 gevent.monkey.patch_socket()
 gevent.monkey.patch_ssl()
 
+NUM_POSTS_TO_HIT = 1
+
 client_id = "d178391dddfa4e6cb79bc1226a3e11a7"
 client_secret = "98642c73a1ed46e8bf29f4682c728681"
 
@@ -64,8 +66,8 @@ def do_pull():
     for posts in post_data_list:
         if not last_posts or posts[0].id not in last_posts:
             #-----------MAKE_HIT()-----------
-            if db['tracked_users'].find_one({'user_id': posts[0].user.id})['post_since_last_hit'] >= 3:
-                db['tracked_users'].update_one({'user_id': posts[0].user.id}, {'$set': {'post_since_last_hit': 0}})
+            if db['tracked_users'].find_one({'user_id': posts[0].user.id})['post_since_last_hit'] >= NUM_POSTS_TO_HIT:
+                db['tracked_users'].update_one({'user_id': posts[0].user.id}, {'$set': {'post_since_last_hit': 1}})
                 make_hit.make_hit_from_post(posts[0].user.id, posts[0].id)
                 print "Made HIT from %s" % (posts[0].id)
             else:
