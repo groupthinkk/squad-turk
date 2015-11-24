@@ -45,11 +45,13 @@ def update_ratings(qualification_name):
             try:
                 connection.assign_qualification(qualification_type_id, turk_id, value=rating, send_notification=True)
                 print "Assigned"
-            except:
+            except Exception, e:
+                raise e
                 try:
                     connection.update_qualification_score(qualification_type_id, turk_id, value=rating)
                     print "Updated"
-                except:
+                except Exception, e:
+                    raise e
                     print "%s was not found" % (turk_id)
         else:
             try:
