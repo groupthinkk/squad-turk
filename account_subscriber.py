@@ -9,7 +9,7 @@ import gevent.monkey
 gevent.monkey.patch_socket()
 gevent.monkey.patch_ssl()
 
-NUM_POSTS_TO_HIT = 1
+NUM_POSTS_TO_HIT = 2
 
 client_id = "d178391dddfa4e6cb79bc1226a3e11a7"
 client_secret = "98642c73a1ed46e8bf29f4682c728681"
@@ -28,7 +28,7 @@ def add_tracked_user(username):
     for data in datalist:
         if data.username == username:
             if get_user_posts(str(data.id), []) != False:
-                db['tracked_users'].insert({'username': username,'user_id':str(data.id), 'post_since_last_hit':0})
+                db['tracked_users'].insert({'username': username,'user_id':str(data.id), 'post_since_last_hit':1})
                 return True
             else:
                 return False
