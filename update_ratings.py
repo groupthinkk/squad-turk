@@ -40,7 +40,7 @@ def update_ratings(qualification_name):
     print results
     for r in results:
         turk_id = r['turker']['turker_id']
-        rating = float(r['correctness'])
+        rating = int(r['correctness'])
         if rating >= .6:
             try:
                 connection.assign_qualification(qualification_type_id, turk_id, value=rating, send_notification=True)
