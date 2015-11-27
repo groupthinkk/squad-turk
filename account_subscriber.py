@@ -9,7 +9,7 @@ import gevent.monkey
 gevent.monkey.patch_socket()
 gevent.monkey.patch_ssl()
 
-NUM_POSTS_TO_HIT = 2
+NUM_POSTS_TO_HIT = 3
 
 client_id = "d178391dddfa4e6cb79bc1226a3e11a7"
 client_secret = "98642c73a1ed46e8bf29f4682c728681"

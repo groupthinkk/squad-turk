@@ -100,7 +100,7 @@ def make_hit_from_post(user_id, post_id):
     worker_ids = [x.SubjectId for x in connection.get_all_qualifications_for_qual_type(QUAL) if x.SubjectId not in IGNORE_LIST]
     send_workers_message(worker_ids, "A new Market Intelligence HIT has been posted", "A new HIT has been posted by Market Intelligence. It has HIT_ID %s. All our HITs can be found at our requester page (http://bit.ly/20vu8m5) or by searching for Market Intelligence. You are qualified to do the HIT. This HIT has a limited number of assignments and may not be available if you reach it late." % (hit_id))
     time = datetime.datetime.utcnow().strftime("%b %d %H:%M:%S")
-    create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), description="This is a qualifying HIT. You must take 4 of these have have an average rate of 60 percent to qualify. This HIT will take less than 2 minutes. Message us with any issues. Date: %s" %(time), reward_amount=.28, qualification_list = [q1, q2, qual2], max_assignments=100)
+    create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), description="This is a qualifying HIT. You must take 4 of these have have an average rate of 60 percent to qualify. This HIT will take less than 2 minutes. Message us with any issues. Date: %s" %(time), reward_amount=.28, qualification_list = [q1, q2, qual2])
 
 if __name__ == '__main__':
     for _ in xrange(20):
