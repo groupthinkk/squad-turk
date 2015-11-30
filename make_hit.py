@@ -47,7 +47,7 @@ def create_hit(url=None, title=None, description=None, keywords=None, reward_amo
     lifetime_in_minutes = lifetime_in_minutes or 500
     lifetime = datetime.timedelta(minutes=lifetime_in_minutes)
 
-    approval_delay_in_days = approval_delay_in_days or 5
+    approval_delay_in_days = approval_delay_in_days or 1
     approval_delay = datetime.timedelta(days=approval_delay_in_days)
 
     q1 = PercentAssignmentsApprovedRequirement('GreaterThan', 95)
