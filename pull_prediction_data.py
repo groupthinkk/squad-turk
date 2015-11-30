@@ -1,4 +1,5 @@
 import os
+import sys
 from boto.mturk.connection import MTurkConnection
 from boto.mturk.question import ExternalQuestion
 from boto.mturk.price import Price
@@ -33,7 +34,6 @@ client_id = "375701af44384b6da4230f343a528b92"
 client_secret = "9620d4aef36f4e5b9139731497babcdb"
 
 api = InstagramAPI(client_id=client_id, client_secret=client_secret)
-
 
 def make_prediction_csv():
     hits = list(connection.get_all_hits())
@@ -87,5 +87,36 @@ def make_prediction_csv():
                 break
         writer.writerow(row)
 
+def make_predictor_csv():
+    API_URL = "http://squadapi.com/api/v0/predictions/turkers/performance" + "?api_key=" + API_KEY
+    data = {"api_key":API_KEY}
+    _next = API_URL
+    results = []
+    while (_next):
+        res = requests.get(_next)
+        if res.status_code != 200:
+            print "POST Error ", res.text, data, _next
+            return
+        j = res.json()
+        results.extend(j['results'])
+        _next = j['next']
+    csvfile = open("predictors-%s.csv" % (datetime.datetime.strftime(datetime.datetime.utcnow(), '%m-%d-%y|%H-%M')), "wb")
+    fieldnames = [
+                    'turk_id',
+                    'rating'
+                ]
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer.writeheader()
+    for post in results:
+        turk_id = post['turker']['turker_id']
+        rating = post['correctness']*100
+        if rating > 59.5:
+            writer.writerow({'turk_id':turk_id, 'rating':rating})
+        else:
+            break
+
 if __name__ == '__main__':
-    make_prediction_csv()
+    if len(sys.argv) == 1 or sys.argv[1] == '0':
+        make_prediction_csv()
+    else:
+        make_predictor_csv()
