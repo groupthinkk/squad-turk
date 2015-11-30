@@ -37,6 +37,22 @@ def get_all_reviewable_hits(mtc):
         hits.extend(temp_hits)
     return hits
 
+def get_all_assignments(hit_id, mtc):
+    page_size = 50
+    assignments = mtc.get_assignments(hit_id, page_size=page_size)
+    total_pages = float(assignments.TotalNumResults)/page_size
+    int_total= int(total_pages)
+    if(total_pages-int_total>0):
+        total_pages = int_total+1
+    else:
+        total_pages = int_total
+    pn = 1
+    while pn < total_pages:
+        pn = pn + 1
+        temp_assignments = mtc.get_assignments(hit_id, page_size=page_size,page_number=pn)
+        assignments.extend(temp_assignments)
+    return assignments
+
 mtc = MTurkConnection(aws_access_key_id=AWS_ACCESS_KEY_ID,
                       aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
                       host=HOST)
@@ -44,9 +60,7 @@ mtc = MTurkConnection(aws_access_key_id=AWS_ACCESS_KEY_ID,
 hits = get_all_reviewable_hits(mtc)
 
 for hit in hits:
-    assignments = mtc.get_assignments(hit.HITId)
+    assignments = get_all_assignments(hit.HITId, mtc)
     for assignment in assignments:
         if assignment.AssignmentStatus == "Submitted":
             mtc.approve_assignment(assignment.AssignmentId)
-        else:
-            print assignment.AssignmentStatus

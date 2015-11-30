@@ -53,7 +53,7 @@ def update_ratings(qualification_name):
                     print "%s was not found" % (turk_id)
         else:
             try:
-                connection.revoke_qualification(turk_id, qualification_type_id, reason="You fell below the required response percentage or hadn't completed 4 HITs. If so, please continue to do our HITs that you are qualified for.")
+                connection.revoke_qualification(turk_id, qualification_type_id, reason="You fell below the required response percentage or hadn't completed 4 HITs. If so, please continue to do our HITs that you are qualified for. The qualification is based on the last 4 HITs you completed, so you can always do more of the qualification HITs in order to get the qualification again.")
                 print "Removed"
             except:
                 print "%s was never qualified" % (turk_id)
