@@ -110,7 +110,7 @@ def make_predictor_csv():
     for post in results:
         turk_id = post['turker']['turker_id']
         rating = post['correctness']*100
-        if rating > 59.5:
+        if rating >= 59.5:
             writer.writerow({'turk_id':turk_id, 'rating':rating})
         else:
             break

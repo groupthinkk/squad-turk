@@ -3,7 +3,7 @@ from instagram.bind import InstagramAPIError
 from pymongo import MongoClient
 import gevent
 import sys
-import make_hit
+import twilio_notify
 
 import gevent.monkey
 gevent.monkey.patch_socket()
@@ -68,7 +68,7 @@ def do_pull():
             #-----------MAKE_HIT()-----------
             if db['tracked_users'].find_one({'user_id': posts[0].user.id})['post_since_last_hit'] >= NUM_POSTS_TO_HIT:
                 db['tracked_users'].update_one({'user_id': posts[0].user.id}, {'$set': {'post_since_last_hit': 1}})
-                make_hit.make_hit_from_post(posts[0].user.id, posts[0].id)
+                twilio_notify.send_texts_from_post(posts[0].user.id, posts[0].id)
                 print "Made HIT from %s" % (posts[0].id)
             else:
                 db['tracked_users'].update_one({'user_id': posts[0].user.id}, {'$inc': {'post_since_last_hit': 1}})
