@@ -17,7 +17,8 @@ cfg = Config(f)
 API_KEY = cfg.API_KEY
 
 def create_queue(user_id, post_id):
-    API_URL = "http://squadapi.com/api/v0/instagram/posts/comparisons/queues/"
+    #API_URL = "http://squadapi.com/api/v0/instagram/posts/comparisons/queues/"
+    API_URL = "http://localhost:9991/api/v0/instagram/posts/comparisons/queues/"
     data = {
         'api_key': API_KEY,
         'user_id': user_id,
@@ -29,12 +30,32 @@ def create_queue(user_id, post_id):
     return res.json()
 
 def send_texts_from_post(user_id, post_id):
-    res = create_queue(user_id, post_id)
-    queue_id = res['id']
-    user_data = db['users'].find(None, {'phone_number': 1} )
-    for user in user_data:
-        phone_number = user['phone_number']
+    user_data = list(db['users'].find(None, {'phone_number': 1} ))
+    all_queues = create_queue(user_id, post_id)
+    for i in xrange(len(user_data)):
+        phone_number = user_data[i]['phone_number']
+        #queue_id = all_queues[i % len(all_queues)]['id']
+        queue_id = all_queues['id']
         try:
             client.messages.create(to=phone_number, from_="+19292947687", body="Hey there! Here is your next challenge! Play ASAP for more points: http://squadtest.heroku.com/q/%d" % queue_id)
         except Exception, e:
             print phone_number, e
+
+def send_texts_from_post_noqueue():
+    user_data = list(db['users'].find(None, {'phone_number': 1} ))
+    for i in xrange(len(user_data)):
+        phone_number = user_data[i]['phone_number']
+        #queue_id = all_queues[i % len(all_queues)]['id']
+        #queue_id = all_queues['id']
+        try:
+            client.messages.create(to=phone_number, from_="+19292947687", body="Hey there! You have 3 new challenges! Play now to stay ahead! http://squadtest.heroku.com/q")
+        except Exception, e:
+            print phone_number, e
+    db['users'].update(
+        {'available_queues':{'$gte':-1}},
+        {"$set": {"available_queues": 3} },
+        multi=True
+    )
+
+if __name__ == '__main__':
+    send_texts_from_post_noqueue()

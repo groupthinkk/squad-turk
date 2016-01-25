@@ -103,11 +103,18 @@ def make_hit_from_post(user_id, post_id):
     create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), description="This is a qualifying HIT. You must take 4 of these have have an average rate of 60 percent to qualify. This HIT will take less than 2 minutes. Message us with any issues. Date: %s" %(time), reward_amount=.28, qualification_list = [q1, q2, qual2])
 
 if __name__ == '__main__':
-    for _ in xrange(20):
-        HOST = 'mechanicalturk.sandbox.amazonaws.com'
-        QUAL = '3ZNBPLV0N92Q4CDD8ICDTG5RJLD2CJ'
-        queue_id = sys.argv[1]
-        q2 = NumberHitsApprovedRequirement('GreaterThan', 1)
-        response1 = create_hit(url="https://squadtest.herokuapp.com/?queueId=%s" % (queue_id), reward_amount=.45, qualification_list=[q2], lifetime_in_minutes=60*24*30, duration_in_minutes=60, description="This HIT must be completed within 15 minutes of it being posted. It will take less than 2 minutes.")
+    user_id = '4641204'
+    post_id = '1157475420733625548_4641204'
+    API_URL = "http://127.0.0.1:9991/api/v0/instagram/posts/comparisons/queues/"
+    data = {
+        'api_key': API_KEY,
+        'user_id': user_id,
+        'post_id': post_id
+    }
+    res = requests.post(API_URL, data=data)
+    print res.json()
+    print len(res.json())
+    if res.status_code != 200:
+        print "POST Error ", res.text, data
 
     
