@@ -37,7 +37,7 @@ def send_texts_from_post(user_id, post_id):
         #queue_id = all_queues[i % len(all_queues)]['id']
         queue_id = all_queues['id']
         try:
-            client.messages.create(to=phone_number, from_="+19292947687", body="Hey there! Here is your next challenge! Play ASAP for more points: http://squadtest.heroku.com/q/%d" % queue_id)
+            client.messages.create(to=phone_number, from_="+19292947687", body="Squad: Hey there! Here is your next challenge! Play ASAP for more points: http://squadtest.heroku.com/q/%d" % queue_id)
         except Exception, e:
             print phone_number, e
 
@@ -48,12 +48,14 @@ def send_texts_from_post_noqueue():
         #queue_id = all_queues[i % len(all_queues)]['id']
         #queue_id = all_queues['id']
         try:
-            client.messages.create(to=phone_number, from_="+19292947687", body="Hey there! You have 3 new challenges! Play now to stay ahead! http://squadtest.heroku.com/q")
+            client.messages.create(to=phone_number, from_="+19292947687", body="Squad: Hey there! You have 3 new challenges! Play now to stay ahead! http://squadtest.heroku.com/q")
         except Exception, e:
             print phone_number, e
+    queue_type_list = ['food', 'fashion', 'sports']
+    shuffle(queue_type_list)
     db['users'].update(
         {'available_queues':{'$gte':-1}},
-        {"$set": {"available_queues": 3} },
+        {"$set": {"available_queues": queue_type_list} },
         multi=True
     )
 
