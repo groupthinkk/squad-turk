@@ -55,7 +55,7 @@ def send_texts_from_post_noqueue():
     queue_type_list = ['food', 'fashion', 'sports']
     shuffle(queue_type_list)
     db['users'].update(
-        {'available_queues':{'$gte':-1}},
+        {},
         {"$set": {"available_queues": queue_type_list} },
         multi=True
     )
