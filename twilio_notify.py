@@ -2,6 +2,7 @@ from twilio.rest import TwilioRestClient
 from pymongo import MongoClient
 from config import Config
 import requests
+from random import shuffle
 
 account_sid = "AC92676a683900b40e7ba19d1b9a78a5ef"
 auth_token = "4de6b64136ddfcf839562af528f9304e"
