@@ -49,7 +49,7 @@ def send_texts_from_post_noqueue():
         #queue_id = all_queues[i % len(all_queues)]['id']
         #queue_id = all_queues['id']
         try:
-            client.messages.create(to=phone_number, from_="+19292947687", body="Squad: Hey there! You have 3 new challenges! Play now to stay ahead! http://squadtest.heroku.com/q")
+            client.messages.create(to=phone_number, from_="+19292947687", body="Squad: Hey there! You have 3 new challenges! Play now to stay ahead! http://goo.gl/Mt1Wa0")
         except Exception, e:
             print phone_number, e
     queue_type_list = ['food', 'fashion', 'sports']
