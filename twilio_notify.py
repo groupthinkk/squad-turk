@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from config import Config
 import requests
 from random import shuffle
+from datetime import datetime, timedelta
 
 account_sid = "AC92676a683900b40e7ba19d1b9a78a5ef"
 auth_token = "4de6b64136ddfcf839562af528f9304e"
@@ -43,22 +44,24 @@ def send_texts_from_post(user_id, post_id):
             print phone_number, e
 
 def send_texts_from_post_noqueue():
+    now = datetime.now()
     user_data = list(db['users'].find(None, {'phone_number': 1} ))
     for i in xrange(len(user_data)):
         phone_number = user_data[i]['phone_number']
+        if now - user_data[i]['last_queue'] > timedelta(days=2):
         #queue_id = all_queues[i % len(all_queues)]['id']
         #queue_id = all_queues['id']
-        try:
-            client.messages.create(to=phone_number, from_="+19292947687", body="Squad: Hey there! You have 3 new challenges! Play now to stay ahead! http://goo.gl/Mt1Wa0")
-        except Exception, e:
-            print phone_number, e
-    queue_type_list = ['food', 'fashion', 'sports']
-    shuffle(queue_type_list)
-    db['users'].update(
-        {},
-        {"$set": {"available_queues": queue_type_list} },
-        multi=True
-    )
+            try:
+                client.messages.create(to=phone_number, from_="+19292947687", body="Squad: You're falling in the leaderboard! Play now to stay ahead! http://goo.gl/Mt1Wa0")
+            except Exception, e:
+                print phone_number, e
+    # queue_type_list = ['food', 'fashion', 'sports']
+    # shuffle(queue_type_list)
+    # db['users'].update(
+    #     {},
+    #     {"$set": {"available_queues": queue_type_list} },
+    #     multi=True
+    # )
 
 if __name__ == '__main__':
     send_texts_from_post_noqueue()
